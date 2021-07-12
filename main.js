@@ -1,108 +1,25 @@
-const SHA256 = require('crypto-js/sha256');
+const {Blockchain, Transaction} = require('./blockchain.js');
+const EC = require('elliptic').ec;
+const ec = new EC('secp256k1');
 
-class Transaction{
-    constructor(fromAddress, toAddress, amount){
-        this.fromAddress = fromAddress;
-        this.toAddress = toAddress;
-        this.amount = amount;
-    }
-}
-
-class Block{
-    constructor(timestamp, transactions, previousHash = ''){
-        this.timestamp = timestamp;
-        this.transactions = transactions;
-        this.previousHash = previousHash;
-        this.hash = this.calculateHash();
-        this.nonce = 0;
-    }
-
-    calculateHash(){
-        return SHA256( this.previousHash + this.timestamp + JSON.stringify(this.data) + this.nonce).toString();
-    }
-
-    mineBlock(difficulty){
-        while(this.hash.substring(0, difficulty) !== Array(difficulty+1).join("0")){
-            this.nonce++;
-            this.hash = this.calculateHash();
-        }
-    }
-}
-
-class Blockchain{
-    constructor(){
-        this.chain = [this.createGenesisBlock()];
-        this.difficulty = 5;
-        this.pendingTransactions = [];
-        this.miningReward = 100;
-    }
-
-    createGenesisBlock(){
-        return new Block( "01/01/2021", ["Genesis Block"], "0");
-    }
-
-    getLatestBlock(){
-        return this.chain[this.chain.length - 1];
-    }
-
-    minePendingTransactions(miningRewadAddress){
-        let block = new Block(Date.now(), this.pendingTransactions);
-        block.mineBlock(this.difficulty);
-
-        console.log('Block successfully mined!');
-        this.chain.push(block);
-
-        this.pendingTransactions = [
-            new Transaction(null, miningRewadAddress, this.miningReward)
-        ];
-    }
-
-    createTransaction(transaction){
-        this.pendingTransactions.push(transaction);
-    }
-
-    getBalanceOfAddress(address){
-        let balance = 0;
-
-        for(const block of this.chain){
-            for(const trans of block.transactions){
-                if (trans.fromAddress === address) {
-                    balance -= trans.amount;
-                }
-                if (trans.toAddress === address) {
-                    balance += trans.amount;
-                }
-            }
-        }
-
-        return balance;
-    }
-
-    isChainValid(){
-        for (let i = 1; i < this.chain.length; i++) {
-            const currentBlock = this.chain[i];
-            const previousBlock = this.chain[i - 1];
-            if (currentBlock.hash !== currentBlock.calculateHash()){
-                return false;
-            }
-            if (currentBlock.previousHash !== previousBlock.hash){
-                return false;
-            }
-        }
-        return true;
-    }
-}
+const myKey = ec.keyFromPrivate('53d1deb3dbeec3005103afa3d38c98e6dd71687f4f5b636b192faeff83cef957');
+const myWalletAddress = myKey.getPublic('hex');
 
 let akhilCoin = new Blockchain();
-akhilCoin.createTransaction(new Transaction('Alice', 'Bob', 100));
-akhilCoin.createTransaction(new Transaction('Bob', 'Alice', 50));
+
+const tx1 = new Transaction(myWalletAddress,'public key of receiver goes here', 10);
+tx1.signTransaction(myKey);
+akhilCoin.addTransaction(tx1);
+
+
 console.log('\nStarting miner...');
-akhilCoin.minePendingTransactions('akhil-address');
+akhilCoin.minePendingTransactions(myWalletAddress);
 
-console.log('\nBalance of Akhil is', akhilCoin.getBalanceOfAddress('akhil-address'));
+console.log('\nBalance of Akhil is', akhilCoin.getBalanceOfAddress(myWalletAddress));
 
+console.log('Is chain valid?'+ akhilCoin.isChainValid());
 
-console.log('\nStarting miner again...');
-akhilCoin.minePendingTransactions('akhil-address');
+/**tamper with block chain**/
+// akhilCoin.chain[1].transactions[0].amount = 1;
 
-console.log('\nBalance of Akhil is', akhilCoin.getBalanceOfAddress('akhil-address'));
+// console.log('Is chain valid?'+ akhilCoin.isChainValid());
