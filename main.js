@@ -33,19 +33,6 @@ class Blockchain{
         this.chain.push(newBlock);
     }
 
-    isChainValid(){
-        for (let i = 1; i < this.chain.length; i++) {
-            const currentBlock = this.chain[i];
-            const previousBlock = this.chain[i - 1];
-            if (currentBlock.hash !== currentBlock.calculateHash()){
-                return false;
-            }
-            if (currentBlock.previousHash !== previousBlock.hash){
-                return false;
-            }
-        }
-        return true;
-    }
 }
 
 let akhilCoin = new Blockchain();
@@ -67,14 +54,27 @@ console.log(JSON.stringify(akhilCoin, null, 4));
 
 
 
-
+//tamper with data
+//akhilCoin.chain[1].data = { amount: 100 };
 
 // console.log(JSON.stringify(akhilCoin, null, 4));
 
+    // isChainValid(){
+    //     for (let i = 1; i < this.chain.length; i++) {
+    //         const currentBlock = this.chain[i];
+    //         const previousBlock = this.chain[i - 1];
+    //         if (currentBlock.hash !== currentBlock.calculateHash()){
+    //             return false;
+    //         }
+    //         if (currentBlock.previousHash !== previousBlock.hash){
+    //             return false;
+    //         }
+    //     }
+    //     return true;
+    // }
+
 //console.log('Is blockchain valid? '+akhilCoin.isChainValid());
 
-//tamper with data
-//akhilCoin.chain[1].data = { amount: 100 };
 
 //calculate hash again
 //akhilCoin.chain[1].hash = akhilCoin.chain[1].calculateHash();
