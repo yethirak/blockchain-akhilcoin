@@ -1,4 +1,4 @@
-const SHA256 = require('crypto-js/sha256')
+const SHA256 = require('crypto-js/sha256');
 
 class Block{
     constructor(index, timestamp, data, previousHash = ''){
@@ -52,14 +52,31 @@ let akhilCoin = new Blockchain();
 akhilCoin.addBlock(new Block(1, "10/01/2021", { amount: 2 }));
 akhilCoin.addBlock(new Block(2, "05/02/2021", { amount: 11 }));
 
+console.log(JSON.stringify(akhilCoin, null, 4));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // console.log(JSON.stringify(akhilCoin, null, 4));
 
-console.log('Is blockchain valid? '+akhilCoin.isChainValid());
+//console.log('Is blockchain valid? '+akhilCoin.isChainValid());
 
 //tamper with data
-akhilCoin.chain[1].data = { amount: 100 };
+//akhilCoin.chain[1].data = { amount: 100 };
 
 //calculate hash again
-akhilCoin.chain[1].hash = akhilCoin.chain[1].calculateHash();
+//akhilCoin.chain[1].hash = akhilCoin.chain[1].calculateHash();
 
-console.log('Is blockchain valid? '+akhilCoin.isChainValid());
+//console.log('Is blockchain valid? '+akhilCoin.isChainValid());
