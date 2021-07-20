@@ -32,9 +32,9 @@ class Block{
 class Blockchain{
     constructor(){
         this.chain = [this.createGenesisBlock()];
-        this.difficulty = 5;
+        this.difficulty = 2;
         this.pendingTransactions = [];
-        this.miningReward = 100;
+        this.miningReward = 50;
     }
 
     createGenesisBlock(){
@@ -106,3 +106,24 @@ console.log('\nStarting miner again...');
 akhilCoin.minePendingTransactions('akhil-address');
 
 console.log('\nBalance of Akhil is', akhilCoin.getBalanceOfAddress('akhil-address'));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// akhilCoin.createTransaction(new Transaction('akhil-address', 'Alice', 10));
+// console.log(JSON.stringify(akhilCoin, null, 4));
